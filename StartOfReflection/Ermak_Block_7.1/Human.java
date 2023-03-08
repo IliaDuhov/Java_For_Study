@@ -1,3 +1,7 @@
+/**
+ * 
+ * this is a test class for validate() method;
+ */
 public class Human {
     private int age;
     private int height;
