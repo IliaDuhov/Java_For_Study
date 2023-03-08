@@ -17,7 +17,10 @@ public final class Main {
         System.out.println(ob);
         
     }
-    
+    /**
+    * 
+    * method collects fields of every class in the hierarchy;
+    */
     public static List fieldCollection(Object obj){
         Class clz = obj.getClass();
         List<Field> lst = new ArrayList(Arrays.asList(clz.getDeclaredFields()));
@@ -27,6 +30,10 @@ public final class Main {
         }
         return lst;
     }
+    /**
+    * 
+    * method checks if fields of the class are validate using special class for tests;
+    */
     public static void validate(Object object, Class testClass) throws Throwable{
         for(Method method: testClass.getDeclaredMethods()){
             method.invoke(testClass.newInstance(), object);
