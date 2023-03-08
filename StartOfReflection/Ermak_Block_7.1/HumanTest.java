@@ -1,3 +1,7 @@
+/**
+ * 
+ * this is a test class for validate() method;
+ */
 public class HumanTest {
     public void check(Object obj) throws Exception{
         if(!(obj instanceof Human)) throw new Exception();
