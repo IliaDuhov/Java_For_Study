@@ -16,3 +16,89 @@
 
 ElementType.TYPE_PARAMETER указывает, что аннотация TypeAnnotation может быть записана в объявлении переменной типа.
 В тоже время, ElementType.TYPE_USE указывает, что аннотация может быть использована для любого типа (например, типов, появляющихся в объявлениях, дженериках и при преобразованиях типов).
+
+
+
+4.5 Аннотация @Repeatable
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.ANNOTATION_TYPE)
+public @interface Repeatable
+Иногда возникают ситуации, когда необходимо повторно применить одну и ту же аннотацию к какому-то элементу (объявлению класса, интерфейсу, полю или к используемому типу).
+До Java 8 применялось группирование аннотаций в единый контейнер аннотаций. Выглядело это следующим образом.
+Определим повторяемую аннотацию Game:
+
+@interface Game {
+    String name() default "Что-то под вопросом";
+    String day();
+}
+Определим контейнер Games:
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
+@Retention(RetentionPolicy.RUNTIME)
+@interface Games {
+    Game[] value();
+}
+Использовалось это так:
+
+@Games({
+    @Game(name = "Крикет",  day = "воскресенье"),
+    @Game(day = "четверг"),
+    @Game(name = "Хоккей",   day = "понедельник")
+})
+public class Main {
+    public static void main(String[] args) {
+        Games games = Main.class.getAnnotation(Games.class);
+
+        for (Game game : games.value()) {
+            System.out.println(game.name() + " в " + game.day());
+        }
+    }
+}
+Обратите внимание, повторяющиеся аннотации разделяются запятой.
+Результат выполнения программы:
+
+С появлением Java 8 и @Repeatable все стало немного проще.
+В поле value такой аннотации необходимо указать контейнер для повторяющейся аннотации. Контейнер также представляет собой аннотацию, в которой поле value является массивом типа повторяющейся аннотации.
+Таким образом, мы должны создать контейнерную аннотацию, а затем указать её тип в качестве аргумента.
+В нашем случае, перед определением аннотации @Game необходимо добавить новую аннотацию @Repeatable:
+
+import java.lang.annotation.Repeatable;
+
+@Repeatable(Games.class)
+@interface Game {
+    String name() default "Что-то под вопросом";
+    String day();
+}
+Теперь перед определением класса Main можно применить несколько раз аннотацию @Game:
+
+@Game(name = "Крикет",  day = "воскресенье")
+@Game(day = "четверг")
+@Game(name = "Хоккей",   day = "понедельник")
+public class Main {
+    public static void main(String[] args) {
+        Games games = Main.class.getAnnotation(Games.class);
+
+    	  for (Game game : games.value()) {
+            System.out.println(game.name() + " в " + game.day());
+    	  }
+    }
+}
+Результат выполнения программы тот же:
+
+Мы также можем вместо getAnnotation (Games.class) использовать getAnnotationsByType (Game.class) или getDeclaredAnnotationsByТуре (Game.class):
+
+@Game(name = "Крикет",  day = "воскресенье")
+@Game(day = "вторник")
+@Game(name = "Хоккей",   day = "пятница")
+public class Main {
+    public static void main(String[] args) {
+        Game[] arrayGames = Main.class.getAnnotationsByType(Game.class);
+    	  for(Game game : arrayGames) {
+            System.out.println(game.name() + " в " + game.day());
+    	  }
+    }
+}
