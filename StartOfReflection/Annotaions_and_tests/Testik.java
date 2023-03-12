@@ -9,6 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface Testik {
     Class value();
     /*
+    Properties could be:
     int, double, other primitive types
     String 
     Class
