@@ -20,7 +20,6 @@ public class InjectTest {
     public InjectTest(int num, String str){
         this.num = num;
         this.str = str;
-        System.out.println("Constructor 2");
     }
     @Autowired
     public void setStr(String str) {
