@@ -22,8 +22,8 @@ public class InjectTest {
         this.str = str;
     }
     @Autowired
-    public void setStr(String str) {
-        this.str = str;
+    public void setStr(String str/*123*/) {
+        this.str = str/*123*/;
     }
 
     @Override
